@@ -8,6 +8,7 @@ app.use("/test",(req,res)=>{
     res.send("Hello I am Piyush Patil")
 })
 app.get("/user",(req,res)=>{
+    console.log(req.query)
     res.send({firstName:"Piyush",
         lastName: "Patil"
     })
