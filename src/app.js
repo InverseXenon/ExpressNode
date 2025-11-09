@@ -1,36 +1,27 @@
 const express = require('express');
 
 const app = express();
+const { adminAuth, userAuth } = require("./middlewares/auth")
 
+app.use("/admin",adminAuth)
+app.use("/user",userAuth);
 
-
-app.use("/test",(req,res)=>{
-    res.send("Hello I am Piyush Patil")
+app.post("user/login",(req,res)=>{
+    res.send("USER LOGGED IN SUCCESFULLY!")
 })
+
 app.get("/user",(req,res)=>{
-    console.log(req.query)
-    res.send({firstName:"Piyush",
-        lastName: "Patil"
-    })
+    res.send("User Data SENT!")
 })
 
-app.post("/user",(req,res)=>{
-    console.log("Save Data to the database");
-    res.send("Data Succesfully saved to database.");
+app.get("/admin/getAllData",(req,res)=>{
+    console.log("Sending All data.");
+    res.send("ALL DATA SENT.")
 })
 
-app.delete("/user",(req,res)=>{
-    console.log("Data is being Deleted");
-    res.send("Deleted.")
-})
-
-app.put("/user",(req,res)=>{
-    console.log("User name changed.");
-    res.send("User Updated")
-})
-app.patch("/user",(req,res)=>{
-    console.log("User name patched.");
-    res.send("User Patched")
+app.get("/admin/deleteAllData",(req,res)=>{
+    console.log("Deleting All data.");
+    res.send("ALL DATA DELETED.")
 })
 
 app.listen(3000,()=>{
