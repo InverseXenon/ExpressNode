@@ -73,7 +73,7 @@ app.patch("/user/:userId", async (req,res)=>{
         if(!isUpdateAllowed){
             throw new Error ("You can't Update this.")
         }
-        const user = await User.findByIdAndUpdate({_id : userId},data,{
+        const user = await User.findByIdAndUpdate(userId,data,{
                 runValidators : true,
         }
         );

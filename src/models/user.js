@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 const userSchema = mongoose.Schema({
     firstName : {
@@ -13,11 +14,21 @@ const userSchema = mongoose.Schema({
         required: true,
         unique: true,
         lowercase: true,
-        trim: true
+        trim: true,
+        validate: (value)=>{
+            if(!validator.isEmail(value)){
+                throw new Error ("INVALID EMAIL ADDRESS!" + value);
+            }
+        }
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        validate: (value)=>{
+            if(!validator.isStrongPassword(value)){
+                throw new Error ("Weak Password! \n { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1, returnScore: false, pointsPerUnique: 1, pointsPerRepeat: 0.5, pointsForContainingLower: 10, pointsForContainingUpper: 10, pointsForContainingNumber: 10, pointsForContainingSymbol: 10 }" + value);
+            }
+        }
     },
     age: {
         type: Number,
@@ -43,7 +54,7 @@ const userSchema = mongoose.Schema({
     },
     photoUrl: {
         type: String,
-        default: "https://thumbs.dreamstime.com/b/default-avatar-profile-trendy-style-social-media-user-icon-187599373.jpg"
+        default: "https://thumbs.dreamstime.com/b/default-avatar-profile-trendy-style-social-media-user-icon-187599373.jpg",
     }
 },{
     timestamps: true
