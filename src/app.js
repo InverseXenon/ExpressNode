@@ -15,7 +15,7 @@ app.post("/signup", async (req,res)=>{
     await user.save();
     res.send("User Added Succesfully!")
     } catch (error) {
-        res.send("User is not added.")
+        res.send("User is not added => " + error)
     }
 
     
@@ -60,14 +60,26 @@ app.delete("/user", async (req,res)=>{
 })
 
 // UPDATE 
-app.patch("/user", async (req,res)=>{
-    const userId = req.body.userId; 
+app.patch("/user/:userId", async (req,res)=>{
+    const userId = req.params?.userId; 
     const data = req.body;
+    const ALLOWED_UPDATES = [
+        "photoUrl","about","gender","age","skills","password"
+    ]
     try{
-        const user = await User.findByIdAndUpdate({_id : userId},data);
-        res.send("USER UPDATED SUCCESSFULLY!")
+        const isUpdateAllowed = Object.keys(data).every((k)=>{
+            return ALLOWED_UPDATES.includes(k);
+        })
+        if(!isUpdateAllowed){
+            throw new Error ("You can't Update this.")
+        }
+        const user = await User.findByIdAndUpdate({_id : userId},data,{
+                runValidators : true,
+        }
+        );
+        res.send("USER UPDATED SUCCESSFULLY")
     } catch(err){
-        res.status(400).send("SOMETHING WENT WRONG!")
+        res.status(400).send("Can't Update the User => " + err)
     }
 })
 
