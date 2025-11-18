@@ -80,9 +80,13 @@ app.post("/login",async (req,res)=>{
 app.get("/profile",async (req,res)=>{
     try {
         const cookies = req.cookies;
-        // const {token} = cookies;
+        const {token} = cookies;
+        // Validate the token
 
-        console.log(cookies);
+        const decodedMessage = jwt.verify(token,"Piyush$##%124");
+        const {_id} = decodedMessage;
+        console.log("Logged in user is : " + _id);
+        
         res.send("Reading Cookies.")
         
     } catch (error) {
