@@ -21,4 +21,42 @@ userRouter.get("/user/requests/received",userAuth, async (req,res)=>{
     }
 })
 
+userRouter.get("/user/connections",userAuth, async(req,res)=>{
+    try {
+        const loggedInUser = req.user;
+        const connectionRequests = await ConnectionRequest.find({
+            $or:[
+                {
+                    toUserId: loggedInUser,
+                    status: "accepted",
+                },
+                {
+                    fromUserId : loggedInUser,
+                    status: "accepted"
+                }
+            ]
+            
+        }).populate("fromUserId",["firstName","lastName","photoUrl","age","gender","about","skills"]).
+        populate(
+            "toUserId",["firstName","lastName","photoUrl","age","gender","about","skills"]
+        );
+
+        const data = connectionRequests.map((row)=>
+            {
+                if(row.fromUserId._id.toString() === loggedInUser._id.toString()){
+                return row.toUserId;
+                } else{
+                   return row.fromUserId;
+                }
+            });
+
+        res.json({message: "Data Fetched succesfully!",
+            data 
+        })
+        
+    } catch (error) {
+        res.status(400).send("ERROR : " + error);
+    }
+})
+
 module.exports = userRouter;
